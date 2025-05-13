@@ -33,7 +33,7 @@ class ErrorHandler extends Error {
       err.statusCode = 400;
     }
   
-    // ✅ Handle Mongoose validation errors clearly
+    // Handle Mongoose validation errors clearly
     if (err.name === "ValidationError") {
       const errors = Object.values(err.errors).map((e) => e.message);
       return res.status(400).json({

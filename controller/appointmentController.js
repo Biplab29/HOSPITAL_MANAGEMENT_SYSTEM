@@ -1,5 +1,5 @@
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
-import ErrorHandler from "../middlewares/errorMiddleware.js";
+//import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { Appointment } from "../models/appointmentSchema.js";
 import { User } from "../models/userSchema.js";
 
@@ -36,7 +36,7 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
     !address
   ) {
     //return next(new ErrorHandler("Please fill in all fields", 400));
-    res.status(400).json({message: "Please fill in all fields"});
+    return res.status(400).json({message: "Please fill in all fields"});
   }
 
   const isConflict = await User.find({
@@ -48,14 +48,14 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
 
   if (isConflict.length === 0) {
     // return next(new ErrorHandler("Doctor not found!", 404));
-    res.status(404).json({message: "Doctor not found!"});
+    return res.status(404).json({message: "Doctor not found!"});
   }
 
   if (isConflict.length > 1) {
-    return next(
+    // return next(
       //new ErrorHandler("Doctor conflict! Please contact through email or phone", 409)
-      res.status(404).json({message: "Doctor conflict! Please contact through email or phone"})
-    );
+      return res.status(404).json({message: "Doctor conflict! Please contact through email or phone"});
+    //);
   }
 
   const doctorId = isConflict[0]._id;
@@ -104,7 +104,8 @@ export const updateAppointmentStatus = catchAsyncErrors(async(req,res,next) =>{
     const {id} = req.params;
     let appointment = await Appointment.findById(id);
     if(!appointment){
-        return next(new ErrorHandler("Appointment not found", 404));
+        //return next(new ErrorHandler("Appointment not found", 404));
+        return res.status(404).json({ success: false, message: "Appointment not found"});
     }
     appointment = await Appointment.findByIdAndUpdate(id, req.body,{
         new: true,
@@ -124,7 +125,8 @@ export const deleteAppointment = catchAsyncErrors(async(req, res, next) =>{
     let appointment = await Appointment.findById(id);
     
     if(!appointment){
-        return next(new ErrorHandler("Appointment not found", 404));
+        //return next(new ErrorHandler("Appointment not found", 404));
+        return res.status(404).json({ success: false, message: "Appointment not found" });
     }
     await appointment.deleteOne();
     res.status(200).json({
