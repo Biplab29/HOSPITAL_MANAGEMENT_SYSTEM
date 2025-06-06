@@ -7,10 +7,10 @@ import cloudinary from "cloudinary";
 export const patientRegister = catchAsyncErrors(async (req, res, next) => {
     console.log(req.body);  
 
-    const { firstName, lastName, email, phone, password, gender, dob, nic, role } = req.body;
+    const { firstName, lastName, email, phone, password, gender, dob, nic} = req.body;
 
    
-    if (!firstName || !lastName || !email || !phone || !password || !gender || !dob || !nic || !role) {
+    if (!firstName || !lastName || !email || !phone || !password || !gender || !dob || !nic ) {
         //return next(new ErrorHandler("Please fill the full form!", 400));
         return res.status(400).json({ message: "Please fill the full form!" });
     }
@@ -31,7 +31,7 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
         gender,
         dob,
         nic,
-        role,
+        role: "Patient",
     });
 
  generateToken(user, "User registered successfully!", 201, res);
@@ -96,7 +96,8 @@ export const addNewAdmin = catchAsyncErrors(async(req,res,next) =>{
    });
    res.status(201).json({
     success: true,
-    message: "New Admin Registered!"
+    message: "New Admin Registered!",
+    admin,
    });
 });
 
